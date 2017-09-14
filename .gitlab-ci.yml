@@ -1,0 +1,63 @@
+stages:
+  - Pre-Conditions
+  - Build
+  - Module-Tests
+  - Pre-Deployment
+  - Deployment
+
+# ------------------------------------------------------------------------------
+
+Enviroment-Informations:
+  stage: Pre-Conditions
+  script:
+    - "echo Build Time: `date`"
+    - "echo Build Path: `pwd`"
+    - "echo Build Enviroment: `env`"
+    - "echo Build User: `id`"
+
+Build-Tools:
+  stage: Pre-Conditions
+  script:
+    - "echo Java Version: `java -version`"
+    - "echo Java Compiler Version: `javac -version`"
+    - "echo Maven Version: `mvn -version`"
+
+# ------------------------------------------------------------------------------
+
+Build-Clean:
+  stage: Build
+  script:
+    - "mvn clean"
+
+Build-Project:
+  stage: Build
+  script:
+    - "mvn compile"
+
+# ------------------------------------------------------------------------------
+
+Junit-Test:
+  stage: Module-Tests
+  script:
+    - "mvn clean"
+    - "mvn test"
+
+# ------------------------------------------------------------------------------
+
+Target-Ping-Test:
+  stage: Pre-Deployment
+  script:
+    - "ls -la /runnerStorage/artifacts/janos"
+
+
+# ------------------------------------------------------------------------------
+Build-and-Move:
+  only: dev/master
+  stage: Deployment
+  script:
+  - "mvn clean"
+  - "mvn package"
+  - "sh cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
+  - "sh cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
+  - "sh cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
+  - "tree /runnerStorage/artifacts/janos"
