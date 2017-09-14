@@ -25,6 +25,7 @@ import org.apache.olingo.odata2.api.exception.ODataNotFoundException;
 import org.apache.olingo.odata2.api.exception.ODataNotImplementedException;
 import org.apache.olingo.odata2.janos.processor.api.data.ReadOptions;
 import org.apache.olingo.odata2.janos.processor.api.data.ReadResult;
+import org.apache.olingo.odata2.janos.processor.api.data.store.DataStore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -165,6 +166,19 @@ public interface DataSource {
    */
   Object createData(EdmEntitySet entitySet, Object data) throws ODataNotImplementedException, EdmException,
       ODataApplicationException;
+
+  /**
+   * <p>Updates a single data object identified by the specified entity set and key fields of
+   * the data object.</p>
+   * @param entitySet the {@link EdmEntitySet} the object must correspond to
+   * @param data the data object of the new entity
+   * @return updated data object instance
+   * @throws org.apache.olingo.odata2.api.exception.ODataNotImplementedException
+   * @throws org.apache.olingo.odata2.api.edm.EdmException
+   * @throws org.apache.olingo.odata2.api.exception.ODataApplicationException
+   */
+  public Object updateData(EdmEntitySet entitySet, Object data)
+      throws EdmException, ODataApplicationException;
 
   /**
    * Deletes the relation from the specified source data to a target entity

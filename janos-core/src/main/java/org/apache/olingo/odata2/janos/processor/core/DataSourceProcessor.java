@@ -369,6 +369,8 @@ public class DataSourceProcessor extends ODataSingleProcessor implements ODataPr
     final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, properties);
 
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), merge);
+    
+    dataSource.updateData(entitySet, data);
 
     return ODataResponse.newBuilder().eTag(constructETag(entitySet, data)).build();
   }
@@ -1130,7 +1132,6 @@ public class DataSourceProcessor extends ODataSingleProcessor implements ODataPr
             dataSource.writeRelation(entitySet, data, relatedEntitySet, key);
           }
         }
-
       } else {
         if (relatedValue instanceof ODataFeed) {
           ODataFeed feed = (ODataFeed) relatedValue;
@@ -1145,12 +1146,21 @@ public class DataSourceProcessor extends ODataSingleProcessor implements ODataPr
           }
         } else if (relatedValue instanceof ODataEntry) {
           final ODataEntry relatedValueEntry = (ODataEntry) relatedValue;
-          Object relatedData = dataSource.newDataObject(relatedEntitySet);
-          setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValueEntry.getProperties(), false);
-          dataSource.createData(relatedEntitySet, relatedData);
-          dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData,
-              relatedEntityType));
-          createInlinedEntities(relatedEntitySet, relatedData, relatedValueEntry);
+
+          if (!relatedValueEntry.containsInlineEntry()) {
+            final String uriString = relatedValueEntry.getMetadata().getUri();
+            final Map<String, Object> key = parseLinkUri(relatedEntitySet, uriString);
+            if (key != null) {
+              dataSource.writeRelation(entitySet, data, relatedEntitySet, key);
+            }
+          } else {
+	          Object relatedData = dataSource.newDataObject(relatedEntitySet);
+	          setStructuralTypeValuesFromMap(relatedData, relatedEntityType, relatedValueEntry.getProperties(), false);
+	          dataSource.createData(relatedEntitySet, relatedData);
+	          dataSource.writeRelation(entitySet, data, relatedEntitySet, getStructuralTypeValueMap(relatedData,
+	              relatedEntityType));
+	          createInlinedEntities(relatedEntitySet, relatedData, relatedValueEntry);
+          }
         } else {
           throw new ODataException("Unexpected class for a related value: " + relatedValue.getClass().getSimpleName());
         }
