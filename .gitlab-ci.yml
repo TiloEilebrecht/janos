@@ -57,8 +57,8 @@ Build-and-Move:
   - "mvn clean"
   - "mvn package"
   - "cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
-  - "cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
-  - "cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
+  - "cp janos-api/target/*.jar /runnerStorage/artifacts/janos"
+  - "cp janos-it/target/*.jar /runnerStorage/artifacts/janos"
   - "tree /runnerStorage/artifacts/janos"
   only:
     - dev/master
