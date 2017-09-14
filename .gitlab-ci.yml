@@ -52,7 +52,6 @@ Target-Ping-Test:
 
 # ------------------------------------------------------------------------------
 Build-and-Move:
-  only: dev/master
   stage: Deployment
   script:
   - "mvn clean"
@@ -61,3 +60,6 @@ Build-and-Move:
   - "sh cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
   - "sh cp janos-core/target/*.jar /runnerStorage/artifacts/janos"
   - "tree /runnerStorage/artifacts/janos"
+  only:
+    - dev/master
+
