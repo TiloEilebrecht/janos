@@ -369,6 +369,8 @@ public class DataSourceProcessor extends ODataSingleProcessor implements ODataPr
     final ODataEntry entryValues = parseEntry(entitySet, content, requestContentType, properties);
 
     setStructuralTypeValuesFromMap(data, entityType, entryValues.getProperties(), merge);
+    
+    dataSource.updateData(entitySet, data);
 
     return ODataResponse.newBuilder().eTag(constructETag(entitySet, data)).build();
   }
