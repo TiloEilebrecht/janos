@@ -94,18 +94,18 @@ public class JpaAnnotationDataStore<T> implements DataStore<T> {
     EntityTransaction t = this.entityManager.getTransaction();
     try {
       t.begin();
-      object = this.entityManager.merge(object);
-      this.entityManager.remove(object);
+      T persistentObject = this.read(object);
+      this.entityManager.remove(persistentObject);
       this.entityManager.flush();
       t.commit();
 
-      return object;
+      return persistentObject;
     } catch(Exception e) {
       if(t != null && t.isActive()) {
         t.rollback();
       }
+      throw e;
     }
-    return null;
   }
 
   @Override
